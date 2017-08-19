@@ -1,27 +1,50 @@
+# database storage of state
+# functions to interact with state
+# convert time from UTC to ...
+# slash commands
+#   turns
+#     returns current person and time, next person and earliest time
+#     in players local time
+#     button to share with channel
+#     shares in UTC and all other timezones (randomised order)
+#   /settimezone
+#     possible timezones
+#     timezone
+#   voting
+#     '/vote' returns argument template
+#     proposal number
+#     Y/N
+#     check proposal
+#   proposal
+#     template
+#     number
+#     content
+#       transmute/amend/enact/repeal
+#         rule number
+#         text
+#       or just text
+#     check turn
+#   roll
+#     template
+#     print with updated score
+#   messages reference rule number that dictates their workings
+#   automatically update wiki?
+
+# make code concise but readable and clearly structured
+# nomic module
+# scoreboardinit.sql to initiliase scoreboard from wiki
+
 import
-  slacklib, asynchttpserver, asyncdispatch
+  slacklib, nomicdb
 
-const msgTurns = slackMsg("#general", "autonomic", "", "", "", "", "It freakin worked!")
 
-echo msgTurns
+proc turns*(args: string): string =
+  ## returns the name of current President,
+  ##  the next President and the ealiest time the current turn can end.
+  ##  (According to rule xxx)
+  let
+    (currentPresident, turnStartTime) = nomicdb.getCurrentTurn()
+    nextPresident = nomicdb.getNextPresident()
+  return currentPresident & " " & turnStartTime & " " & nextPresident
 
-proc slackServerRun*(slackReq: asynchttpserver.Request) {.async.} =
-  # To change the standard port:
-  slackPort = Port(65533)
-
-  # Case the command
-  case slackEvent(slackReq, "command"):
-  of "/turns":
-    # If you need to run a proc with the arguments sent, access the 'text' field:
-    echo slackEvent(slackReq, "text")
-    await slackRespond(slackReq, msgTurns)
-
-  of "/vote":
-    echo "Voting!"
-    await slackRespond(slackReq, slackMsg("#general", "autonomic", "", "", "", "", "Vote worked!"))
-
-  else:
-    echo "something else!"
-    await slackRespond(slackReq, slackMsg("#general", "autonomic", "ERROR", "", "danget", "", "wrongo commando"))
-
-waitFor slackServer.serve(slackPort, slackServerRun)
+#echo turns("thingz")
