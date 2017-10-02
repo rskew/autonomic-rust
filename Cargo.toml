@@ -1,5 +1,5 @@
 [package]
-name = "autonomic_rust"
+name = "autonomic"
 version = "0.1.0"
 authors = ["Rowan Skewes <rowan.skewes@gmail.com>"]
 
@@ -13,3 +13,5 @@ url = "1.5"
 time = "0.1"
 rusqlite = "0.12"
 log = "0.3"
+env_logger = "0.3"
+curl = "0.4"
